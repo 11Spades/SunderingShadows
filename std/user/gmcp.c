@@ -3,9 +3,8 @@
 // Handles the player's GMCP requests.
 // Spade, 14 July 2022
 
-int               gmcp_enabled = 0; // Indicates whether or not we should be sending GMCP messages to this player
-mapping modules_supported = ([  ]); // Indicates what message we should be sending to the player
-mapping       module_data = ([  ]); // Contains data for supported modules
+int         gmcp_enabled = 0; // Indicates whether or not we should be sending GMCP messages to this player
+mapping module_data = ([  ]); // Contains data for supported modules
 
 int check_gmcp()
 {
@@ -44,7 +43,39 @@ void gmcp(string str)
     write("\n<GMCP request end.>\n");
 }
 
+void gmcp_update_character(string module, mapping data)
+{
+    if(!check_gmcp())
+        return;
+
+    if (gmcp_enabled)
+    {
+        int i;
+
+        if (!mapp(module_data))
+        {
+            module_data = ([  ]);
+        }
+
+        if (!mapp(module_data["character_" + module]))
+        {
+            module_data["character_" + module] = ([  ]);
+        }
+
+        for (i = 0; i < sizeof(data); ++i)
+        {
+            mixed current_key = keys(data)[i];
+            module_data["character_" + module][current_key] = data[current_key];
+        }
+
+        send_gmcp("character." + module + " " + json_encode(data));
+
+        return;
+    }
+}
+
 // This is a high-frequency call, and should be kept small.
+// Deprecated
 void gmcp_update_character_vitals(mapping data)
 {
     if(!check_gmcp())
@@ -77,6 +108,7 @@ void gmcp_update_character_vitals(mapping data)
 }
 
 // This is an even-higher frequency call, and should be kept small.
+// Deprecated
 void gmcp_update_character_survival(mapping data)
 {
     if(!check_gmcp())
@@ -110,6 +142,7 @@ void gmcp_update_character_survival(mapping data)
     }
 }
 
+// Deprecated
 void gmcp_update_character_resources(mapping data)
 {
     //In-game setting that turns it on/off
