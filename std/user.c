@@ -1345,12 +1345,15 @@ void setup()
     set_living_name(query_name());
     seteuid(getuid());
     set_heart_beat(1);
-    if (!stats) {
+    if (!stats)
         init_stats();
-    }
-    if (!skills) {
+
+    if (!skills)
         init_skills(0);
-    }
+
+    if (!max_hp_components)
+        init_max_hp();
+
     if (query_position() == "creator" || query_position() == "Admin") {
         enable_wizard();
         log_file("adm/enable_wizard", identify(this_object()) + " enabled wizard for itself during logon.\n");
