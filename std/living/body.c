@@ -723,6 +723,13 @@ void recalculate_max_hp_from_feats(int dont_recalculate_total)
         recalculate_max_hp();
 }
 
+void init_max_hp()
+{
+    max_hp_components = ([]);
+    recalculate_max_hp_from_stats(1);
+    recalculate_max_hp_from_feats();
+}
+
 void recalculate_max_hp()
 {
     if (!userp(this_object()))
